@@ -19,10 +19,6 @@ module Middleman
         org_controller.options
       end
 
-      def org_options
-        org_controller.options
-      end
-
       def render(opts={}, locs={}, &block)
         unless opts.has_key?(:layout)
           opts[:layout] = org_options.layout if opts[:layout].nil?
@@ -46,6 +42,16 @@ module Middleman
         data['title']
       end
 
+      def tags
+        article_tags = data['tags']
+
+        if article_tags.is_a? String
+          article_tags.split(',').map(&:strip)
+        else
+          Array(article_tags).map(&:to_s)
+        end
+      end
+
       def published?
         data["published"]
       end
@@ -67,6 +73,9 @@ module Middleman
         end
 
         @_date
+      end
+
+      def slug
       end
 
     end

@@ -5,13 +5,14 @@ require 'middleman-org/helpers'
 module Middleman
   class OrgExtension < ::Middleman::Extension
     option :layout, 'layout', 'article specific layout'
+    option :root, 'org', 'source folder for org files'
     option :prefix, nil, 'prefix on destination path'
-    option :resources, nil, 'folder name for resources'
+    # option :resources, 'resources', 'folder name for resources'
 
     attr_reader :data
 
-    self.defined_helpers = [ Middleman::Org::Helpers ]
-    def initialize(app, options_hash={}, &block)
+    self.defined_helpers = [Middleman::Org::Helpers]
+    def initialize(app, options_hash = {}, &block)
       # Call super to build options from the options_hash
       super
 
@@ -20,7 +21,8 @@ module Middleman
       require 'middleman-org/org_data'
 
       if options.prefix
-        options.prefix = "/#{options.prefix}" unless options.prefix.start_with? '/'
+        # options.prefix = "/^#{options.root}/.*" unless options.prefix.start_with? '/'
+        options.root = File.join(options.prefix, options.root)
       end
 
       app.after_configuration do

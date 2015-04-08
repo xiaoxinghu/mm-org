@@ -26,30 +26,17 @@ module Middleman
       def manipulate_resource_list(resources)
         @_posts = []
         resources.each do |resource|
-          next unless File.extname(resource.source_file) == '.org'
-          article = convert_to_article resource
-          next unless publishable?(article)
+          next unless resource.path =~ /^#{options.root}/
 
-          update_dest(article)
-          @_articles << article
-          puts "------------"
-          puts "is_OrgArticle?: #{resource.is_a?(OrgArticle)}"
-          puts "path: #{resource.path}"
-          puts "dpath: #{resource.destination_path}"
-          puts "src: #{resource.source_file}"
-          puts "url: #{resource.url}"
-          puts "ext: #{resource.ext}"
-          puts "ori ext: #{File.extname(resource.source_file)}"
-          puts "content type: #{resource.content_type}"
-          puts "meta: #{resource.metadata}"
+          resource.destination_path = resource.path.gsub(/^#{options.root}/,
+                                                         options.prefix)
+          if File.extname(resource.source_file) == '.org'
+            article = convert_to_article resource
+            next unless publishable?(article)
+            @_articles << article
+          end
+
         end
-      end
-
-      def update_dest(article)
-        p = File.basename(article.destination_path)
-        p = File.join(options.prefix, p) if options.prefix
-        p = Addressable::URI.unencode(p).to_s
-        article.destination_path = ::Middleman::Util.normalize_path(p)
       end
 
       def publishable?(article)
