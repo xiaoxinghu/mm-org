@@ -6,7 +6,7 @@ module Middleman
   class OrgExtension < ::Middleman::Extension
     option :layout, 'layout', 'article specific layout'
     option :root, 'org', 'source folder for org files'
-    option :prefix, nil, 'prefix on destination path'
+    option :prefix, nil, 'prefix on destination and root path'
     # option :resources, 'resources', 'folder name for resources'
 
     attr_reader :data
@@ -20,10 +20,7 @@ module Middleman
       require 'org-ruby'
       require 'middleman-org/org_data'
 
-      if options.prefix
-        # options.prefix = "/^#{options.root}/.*" unless options.prefix.start_with? '/'
-        options.root = File.join(options.prefix, options.root)
-      end
+      options.root = File.join(options.prefix, options.root) if options.prefix
 
       app.after_configuration do
         template_extensions org: :html

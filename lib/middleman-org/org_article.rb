@@ -55,11 +55,12 @@ module Middleman
       end
 
       def title
-        in_buffer_setting['TITLE']
+        in_buffer_setting['TITLE'] || File.basename(source_file, '.*')
       end
 
       def tags
         article_tags = in_buffer_setting['KEYWORDS']
+        return [] unless article_tags
 
         if article_tags.is_a? String
           article_tags.split(' ').map(&:strip)
