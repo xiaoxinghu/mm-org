@@ -19,6 +19,22 @@ module Middleman
         org_controller.options
       end
 
+      IN_BUFFER_SETTING_REGEXP = /^#\+(\w+):\s*(.*)$/
+
+      def in_buffer_setting
+        return @_in_buffer_setting if @_in_buffer_setting
+
+        @_in_buffer_setting = {}
+        File.open(source_file, 'r') do |f|
+          f.each_line do |line|
+            if line =~ IN_BUFFER_SETTING_REGEXP
+              @_in_buffer_setting[$1] = $2
+            end
+          end
+        end
+        @_in_buffer_setting
+      end
+
       def render(opts={}, locs={}, &block)
         unless opts.has_key?(:layout)
           opts[:layout] = org_options.layout if opts[:layout].nil?
@@ -39,21 +55,21 @@ module Middleman
       end
 
       def title
-        data['title']
+        in_buffer_setting['TITLE']
       end
 
       def tags
-        article_tags = data['tags']
+        article_tags = in_buffer_setting['KEYWORDS']
 
         if article_tags.is_a? String
-          article_tags.split(',').map(&:strip)
+          article_tags.split(' ').map(&:strip)
         else
           Array(article_tags).map(&:to_s)
         end
       end
 
       def published?
-        data["published"]
+        true
       end
 
       def body
@@ -63,14 +79,16 @@ module Middleman
       def date
         return @_date if @_date
 
-        frontmatter_date = data['date']
+        @_date = in_buffer_setting['DATE']
 
-        # First get the date from frontmatter
-        if frontmatter_date.is_a? Time
-          @_date = frontmatter_date.in_time_zone
-        else
-          @_date = Time.zone.parse(frontmatter_date.to_s)
-        end
+        # frontmatter_date = data['date']
+
+        # # First get the date from frontmatter
+        # if frontmatter_date.is_a? Time
+        #   @_date = frontmatter_date.in_time_zone
+        # else
+        #   @_date = Time.zone.parse(frontmatter_date.to_s)
+        # end
 
         @_date
       end

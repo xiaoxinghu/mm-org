@@ -32,6 +32,7 @@ module Middleman
                                                          options.prefix)
           if File.extname(resource.source_file) == '.org'
             article = convert_to_article resource
+            puts article.source_file
             next unless publishable?(article)
             @_articles << article
           end
