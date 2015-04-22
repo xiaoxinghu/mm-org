@@ -28,15 +28,17 @@ module Middleman
         resources.each do |resource|
           next unless resource.path =~ /^#{options.root}/
 
-          resource.destination_path = resource.path.gsub(/^#{options.root}/,
-                                                         options.prefix)
+          if options.prefix
+            resource.destination_path = resource
+              .path
+              .gsub(/^#{options.root}/,
+                    options.prefix)
+          end
           if File.extname(resource.source_file) == '.org'
             article = convert_to_article resource
-            puts article.source_file
             next unless publishable?(article)
             @_articles << article
           end
-
         end
       end
 

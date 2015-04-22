@@ -58,19 +58,27 @@ module Middleman
         in_buffer_setting['TITLE'] || File.basename(source_file, '.*')
       end
 
-      def tags
-        article_tags = in_buffer_setting['KEYWORDS']
-        return [] unless article_tags
+      def keywords
+        article_keywords = in_buffer_setting['KEYWORDS']
+        return [] unless article_keywords
 
-        if article_tags.is_a? String
-          article_tags.split(' ').map(&:strip)
+        if article_keywords.is_a? String
+          article_keywords.split(' ').map(&:strip)
         else
-          Array(article_tags).map(&:to_s)
+          Array(article_keywords).map(&:to_s)
         end
       end
 
+      def description
+        in_buffer_setting['DESCRIPTION'] || 'no description'
+      end
+
+      def category
+        in_buffer_setting['CATEGORY'] || ''
+      end
+
       def published?
-        true
+        in_buffer_setting['DATE'] || false
       end
 
       def body
@@ -80,7 +88,8 @@ module Middleman
       def date
         return @_date if @_date
 
-        @_date = in_buffer_setting['DATE']
+        return nil unless in_buffer_setting['DATE']
+        @_date = Date.parse in_buffer_setting['DATE']
 
         # frontmatter_date = data['date']
 

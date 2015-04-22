@@ -4,12 +4,16 @@ require 'middleman-org/helpers'
 
 module Middleman
   class OrgExtension < ::Middleman::Extension
+    self.supports_multiple_instances = true
+
+    option :name, nil, 'Unique ID for telling multiple orgs apart'
     option :layout, 'layout', 'article specific layout'
     option :root, 'org', 'source folder for org files'
     option :prefix, nil, 'prefix on destination and root path'
     # option :resources, 'resources', 'folder name for resources'
 
     attr_reader :data
+    attr_reader :name
 
     self.defined_helpers = [Middleman::Org::Helpers]
     def initialize(app, options_hash = {}, &block)
@@ -20,7 +24,8 @@ module Middleman
       require 'org-ruby'
       require 'middleman-org/org_data'
 
-      options.root = File.join(options.prefix, options.root) if options.prefix
+      @name = options.name.to_sym if options.name
+      #options.root = File.join(options.prefix, options.root) if options.prefix
 
       app.after_configuration do
         template_extensions org: :html
@@ -31,7 +36,8 @@ module Middleman
     end
 
     def after_configuration
-      ::Middleman::Org.controller = self
+      @name ||= :"org#{::Middleman::Org.instances.keys.length}"
+      ::Middleman::Org.instances[@name] = self
 
       # Make sure ActiveSupport's TimeZone stuff has something to work with,
       # allowing people to set their desired time zone via Time.zone or
