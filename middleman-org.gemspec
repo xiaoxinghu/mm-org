@@ -23,4 +23,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('org-ruby', '~> 0.9.12')
   s.add_runtime_dependency('addressable', '~> 2.3')
   s.add_runtime_dependency('nokogiri', '~> 1.6')
+  s.add_runtime_dependency('emacs-ruby', '~> 0.1')
 end

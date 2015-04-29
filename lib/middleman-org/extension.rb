@@ -10,7 +10,9 @@ module Middleman
     option :layout, 'layout', 'article specific layout'
     option :root, 'org', 'source folder for org files'
     option :prefix, nil, 'prefix on destination and root path'
-    # option :resources, 'resources', 'folder name for resources'
+
+    option :emacs, 'emacs', 'emacs executable'
+    option :load, nil, 'load elisp file'
 
     attr_reader :data
     attr_reader :name
@@ -21,14 +23,19 @@ module Middleman
       super
 
       # Require libraries only when activated
+      require 'emacs-ruby'
       require 'org-ruby'
       require 'middleman-org/org_data'
+      ::Tilt.prefer(Tilt::OrgTemplate, 'org')
 
       @name = options.name.to_sym if options.name
-      #options.root = File.join(options.prefix, options.root) if options.prefix
+      # options.root = File.join(options.prefix, options.root) if options.prefix
 
       app.after_configuration do
         template_extensions org: :html
+        if config[:org_engine] == :emacs_ruby
+          ::Tilt.prefer(Tilt::EmacsRuby::OrgTemplate, 'org')
+        end
       end
 
       # set up your extension

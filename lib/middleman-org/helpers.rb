@@ -31,7 +31,7 @@ module Middleman
         org_controller(org_name).data
       end
 
-      def is_org_article?
+      def org_article?
         !current_article.nil?
       end
 

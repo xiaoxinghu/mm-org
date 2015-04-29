@@ -42,7 +42,12 @@ module Middleman
           opts[:layout] = opts[:layout].to_s if opts[:layout].is_a? Symbol
         end
 
+        opts[:emacs] = org_options.emacs
+        opts[:load] = org_options.load
+
         content = super(opts, locs, &block)
+        # testing
+        # content = export source_file
         fix_links(content)
       end
 
