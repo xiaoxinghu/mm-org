@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = ['dawnstar.hu@gmail.com']
   s.homepage    = 'http://github.com/xiaoxinghu/middleman-org'
   s.summary     = %q{org-mode extension for middleman}
-  s.description = %q{Middleman extension for publishing org-mode project}
+  s.description = %q{Use in buffer settings as front matter.}
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
